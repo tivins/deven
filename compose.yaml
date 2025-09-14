@@ -1,0 +1,45 @@
+services:
+
+  web:
+    container_name: deven_web
+    build: ./docker/web
+    restart: always
+    ports: ["8099:80"]
+    volumes:
+      - ${APP_ROOT}:/sites
+      - ./deven-sys:/deven-sys
+    environment:
+      - APACHE_RUN_USER=#1000
+      - APACHE_RUN_GROUP=#1000
+
+  db:
+    container_name: deven_db
+    image: mariadb:latest
+    restart: always
+    volumes:
+      - ${APP_ROOT}:/sites
+      - ./deven-sys:/deven-sys
+    ports:
+      - "3399:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: example
+
+  adminer:
+    container_name: deven_adminer
+    image: adminer:latest
+    restart: always
+    ports: ["9099:8080"]
+
+#  python:
+#    container_name: deven_tts
+#    build: ./docker/python
+#    restart: always
+#    volumes:
+#      - ./app:/app
+#    deploy:
+#      resources:
+#        reservations:
+#          devices:
+#            - driver: nvidia
+#              count: all # `count: 1` or `count: all` for all GPUs
+#              capabilities: [ gpu ]

@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+COMMAND=$1
+
+case "$COMMAND" in
+""|help)
+  echo "Help"
+  ;;
+version)
+  echo "v1"
+  ;;
+cd)
+  dir="$(dirname $(readlink "$0"))"
+  echo "$dir"
+  ;;
+build)
+  docker compose up --build -d
+  ;;
+stop)
+  docker compose stop
+  ;;
+restart)
+  docker compose stop
+  docker compose up -d
+  ;;
+ps)
+  docker ps | grep deven
+  ;;
+bash)
+  docker exec -it deven_web bash
+  ;;
+*)
+  echo "░█ Command not found."
+  ;;
+esac
