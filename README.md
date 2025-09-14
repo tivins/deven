@@ -1,10 +1,13 @@
 # Deven
 
-Dockerized development environment
+Dockerized development environment for PHP, MariaDB, Node, Typescript, Python.
 
 ## Configure
 
-Copy `.env.sample` to `.env` and edit values to match with your environment.
+* Copy `.env.sample` to `.env` and edit values to match with your environment.
+* Copy `docker/web/apache/sites.conf.sample` to `docker/web/apache/sites.conf` and add vhosts.
+
+### `.env` example
 
 ```
 APP_ROOT=/data/projects/web/
@@ -13,7 +16,16 @@ MARIADB_PORT=3306
 ADMINER_PORT=8080
 ```
 
-## Install 
+### `sites.conf` example
+```
+Use Site my-project.local /sites/my-project/public/
+Use Site my-other-app.local /sites/my-app/src/
+```
+
+
+## CLI
+
+**Installation**
 
 By default, you have to `cd /path/to/deven`, then use `./deven`.
 
