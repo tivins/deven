@@ -9,7 +9,6 @@ function getDir() {
 }
 trim() {
   local __in="$1"
-  # méthode POSIX compatible avec printf + sed
   printf '%s' "$__in" | sed -e 's/^[[:space:]]\+//' -e 's/[[:space:]]\+$//'
 }
 
