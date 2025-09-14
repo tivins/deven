@@ -1,17 +1,32 @@
 #!/usr/bin/env bash
 
+
+
+function getDir() {
+  local dir
+  dir="$(dirname "$(readlink "$0")")"
+  echo "$dir"
+}
+trim() {
+  local __in="$1"
+  # méthode POSIX compatible avec printf + sed
+  printf '%s' "$__in" | sed -e 's/^[[:space:]]\+//' -e 's/[[:space:]]\+$//'
+}
+
+
 COMMAND=$1
+. "$(getDir)/.env"
+
 
 case "$COMMAND" in
 ""|help)
   echo "Help"
   ;;
 version)
-  echo "v1"
+  echo "1"
   ;;
 cd)
-  dir="$(dirname $(readlink "$0"))"
-  echo "$dir"
+  echo "$(getDir)"
   ;;
 build)
   docker compose up --build -d
@@ -25,6 +40,19 @@ restart)
   ;;
 ps)
   docker ps | grep deven
+  ;;
+list)
+  file="$(getDir)/docker/web/apache/sites.conf"
+  while IFS= read -r line; do
+    [[ -z $line ]] && continue
+    read -ra parts <<< "$line"
+    port="$(trim "$HTTP_PORT")"
+    echo "- http://${parts[2]}:$port/ -> ${parts[3]}"
+  done < "$file"
+  ;;
+edit)
+  file="$(getDir)/docker/web/apache/sites.conf"
+  vim "$file"
   ;;
 bash)
   docker exec -it deven_web bash
