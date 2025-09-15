@@ -37,8 +37,6 @@ Use Site my-other-app.local /sites/my-app/src/
 > deven restart
 > ```
 
-
-
 ## CLI
 
 **Installation**
@@ -58,6 +56,7 @@ sudo ln -s /path/to/deven deven
 deven start     # Start containers (build if required)
 deven restart   # Restart containers 
 deven bash      # Open a bash shell inside the web container
+deven bash [container] # Open a bash shell inside the [container] container. Ex: `deven bash db`.
 deven cd        # Display the Deven folder path. Use with: cd $(deven cd)
 deven list      # Display the list of configured sites
 deven edit      # Edit the configuration file with vim
@@ -68,6 +67,12 @@ deven edit      # Edit the configuration file with vim
 > ```shell
 > cd $(deven cd)
 > ```
+
+## Containers
+
+* **web**: based on php:8.4-apache
+* **db**: based on mariadb
+* **adminer**: adminer image
 
 ## To do
 

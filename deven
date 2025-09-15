@@ -14,6 +14,7 @@ trim() {
 
 
 COMMAND=$1
+ARG1=$2
 . "$(getDir)/.env"
 
 
@@ -54,7 +55,12 @@ edit)
   vim "$file"
   ;;
 bash)
-  docker exec -it deven_web bash
+  if [ -z "$ARG1" ]; then
+    container="deven_web"
+  else
+    container="deven_$ARG1"
+  fi
+  docker exec -it "$container" bash
   ;;
 *)
   echo "░█ Command not found."

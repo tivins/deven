@@ -28,17 +28,3 @@ services:
     image: adminer:latest
     restart: always
     ports: ["${ADMINER_PORT}:8080"]
-
-#  python:
-#    container_name: deven_tts
-#    build: ./docker/python
-#    restart: always
-#    volumes:
-#      - ./app:/app
-#    deploy:
-#      resources:
-#        reservations:
-#          devices:
-#            - driver: nvidia
-#              count: all # `count: 1` or `count: all` for all GPUs
-#              capabilities: [ gpu ]

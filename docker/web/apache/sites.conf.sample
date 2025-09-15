@@ -1,4 +1,4 @@
 # Use Site [hostname] [path in '/sites/']
 # ex:
-# Use Site my-project.local /sites/my_project
+#   Use Site my-project.local /sites/my_project/public
 
