@@ -1,0 +1,40 @@
+# Utilise l'image PyTorch officielle avec CUDA 11.8
+FROM pytorch/pytorch:2.3.1-cuda11.8-cudnn8-devel
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED=1
+ENV HF_HOME=/app/cache
+ENV PYTHONPATH=/app:/app/ai
+ENV PIP_NO_CACHE_DIR=1
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Install additional system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    ffmpeg \
+    espeak-ng \
+    wget \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Set working directory
+WORKDIR /app
+
+# Copy requirements first for better caching
+COPY requirements.txt .
+
+# Upgrade pip and install dependencies
+RUN pip install --upgrade pip setuptools wheel
+
+# Install Python dependencies (PyTorch est déjà inclus dans l'image de base)
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Create cache directory for models
+RUN mkdir -p /app/cache
+
+# Expose port
+EXPOSE 8000
+
+# Default command
+CMD ["python", "chatbot.py"]

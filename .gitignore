@@ -8,3 +8,6 @@
 
 # project diff file
 /.diff
+
+# ai cache
+volumes/ai/__pycache__

@@ -1,0 +1,31 @@
+services:
+
+  python:
+    container_name: deven_ai
+    build: ./docker/python
+    restart: unless-stopped
+    volumes:
+      - ./volumes/ai:/app
+      - ai_cache:/app/cache
+    environment:
+      - MODEL_NAME=${AI_MODEL_NAME:-microsoft/Phi-3-mini-4k-instruct}
+      - MAX_LENGTH=${AI_MAX_LENGTH:-2048}
+      - TEMPERATURE=${AI_TEMPERATURE:-0.7}
+      - HF_HOME=/app/cache
+    networks:
+      - deven_network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all # `count: 1` or `count: all` for all GPUs
+              capabilities: [ gpu ]
+
+volumes:
+  ai_cache:
+    driver: local
+
+networks:
+  deven_network:
+    driver: bridge

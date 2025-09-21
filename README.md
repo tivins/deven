@@ -8,11 +8,13 @@ Deven provides a complete development stack with Apache, MariaDB, and Adminer, m
 
 - **PHP 8.4** with Apache web server
 - **MariaDB** database with Adminer interface
+- **AI Chat Service** with Python/FastAPI and Hugging Face Transformers
 - **Multi-site support** with virtual hosts
 - **CLI tool** for easy management
 - **Database backup** functionality
 - **Composer** pre-installed
 - **ImageMagick** support
+- **GPU support** for AI workloads (NVIDIA)
 
 ## 🚀 Quick Start
 
@@ -62,7 +64,7 @@ Deven provides a complete development stack with Apache, MariaDB, and Adminer, m
 
 ```dotenv
 # Project root directory (mounted to /sites in container)
-APP_ROOT=/data/projects/web
+APP_ROOT=/data/projects
 
 # Database backup directory
 BACKUP_DIR=/data/dumps
@@ -74,6 +76,11 @@ ADMINER_PORT=8080
 
 # Database credentials
 DB_ROOT_PASSWORD=your_secure_password
+
+# AI Service configuration
+AI_MODEL_NAME=microsoft/Phi-3-mini-4k-instruct
+AI_MAX_LENGTH=2048
+AI_TEMPERATURE=0.7
 ```
 
 ### Virtual Hosts (sites.conf)
@@ -101,7 +108,7 @@ Use Site admin.local /sites/admin-panel/dist/
 | `deven stop` | Stop all containers |
 | `deven ps` | Show running containers |
 | `deven bash` | Open bash shell in web container |
-| `deven bash <container>` | Open bash in specific container (e.g., `deven bash db`) |
+| `deven bash <container>` | Open bash in specific container (e.g., `deven bash db`, `deven bash ai`) |
 | `deven cd` | Display Deven directory path |
 | `deven list` | List configured sites |
 | `deven edit` | Edit sites.conf with vim |
@@ -124,6 +131,7 @@ cd $(deven cd)/sites
 | **web** | `php:8.4-apache` | Web server with PHP, Apache, Composer |
 | **db** | `mariadb:latest` | MariaDB database server |
 | **adminer** | `adminer:latest` | Database administration interface |
+| **ai** | `pytorch/pytorch:2.3.1-cuda11.8-cudnn8-devel` | AI chat service with FastAPI and Hugging Face Transformers |
 
 ## 🔧 Usage Examples
 
@@ -158,11 +166,61 @@ cd /sites/your_project
 composer install # Install dependencies
 ```
 
+## 🤖 AI Chat Service
+
+Deven includes an AI chat service powered by Hugging Face Transformers and FastAPI.
+
+### Build the AI Service
+
+```bash
+docker compose -f compose-ai.yaml up -d --build
+```
+
+### AI Service Configuration
+
+The AI service uses the following environment variables:
+
+- `AI_MODEL_NAME`: Hugging Face model name (default: `microsoft/Phi-3-mini-4k-instruct`)
+- `AI_MAX_LENGTH`: Maximum response length (default: `2048`)
+- `AI_TEMPERATURE`: Response creativity (default: `0.7`)
+
+### Using the AI Service
+
+The AI service provides a REST API on port 8000:
+
+```bash
+# Health check
+curl http://localhost:8000/health
+
+# Chat endpoint
+curl -X POST http://localhost:8000/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "messages": [
+      {"role": "user", "content": "Hello, how are you?"}
+    ]
+  }'
+
+# Interactive API documentation
+# Visit http://localhost:8000/docs
+```
+
+### GPU Support
+
+The AI service supports NVIDIA GPU acceleration. Ensure you have:
+- NVIDIA Docker runtime installed
+- Compatible NVIDIA drivers
+- Docker with GPU support
+
+The service will automatically detect and use available GPUs.
+
 ## 🚨 Important Notes
 
 - **Restart required**: After modifying `sites.conf`, run `deven restart`
-- **Port conflicts**: Ensure ports 80, 3306, and 8080 are available
+- **Port conflicts**: Ensure ports 80, 3306, 8080, and 8000 are available
 - **File permissions**: The web container runs as your user (UID 1000)
+- **AI service**: Requires significant RAM and optional GPU for optimal performance
+- **Model download**: First AI service startup will download the model (several GB)
 
 ## 🤝 Contributing
 

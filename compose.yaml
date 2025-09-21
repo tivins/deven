@@ -11,6 +11,8 @@ services:
     environment:
       - APACHE_RUN_USER=#1000
       - APACHE_RUN_GROUP=#1000
+    networks:
+      - deven_network
 
   db:
     container_name: deven_db
@@ -21,9 +23,17 @@ services:
     ports: ["${MARIADB_PORT}:3306"]
     environment:
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    networks:
+      - deven_network
 
   adminer:
     container_name: deven_adminer
     image: adminer:latest
-    restart: always
+    restart: unless-stopped
     ports: ["${ADMINER_PORT}:8080"]
+    networks:
+      - deven_network
+
+networks:
+  deven_network:
+    driver: bridge
