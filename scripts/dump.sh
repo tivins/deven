@@ -10,7 +10,7 @@ TARGET_DATABASE="$1"  # Optional database name parameter
 
 # Load credentials
 if [[ ! -f "$CREDENTIALS_FILE" ]]; then
-    echo "❌ Fichier de credentials non trouvé: $CREDENTIALS_FILE"
+    echo "❌ Credentials file not found: $CREDENTIALS_FILE" >&2
     exit 1
 fi
 
@@ -23,7 +23,7 @@ echo "ℹ️ Backup dir: '$BACKUP_DIR'."
 
 # check if backup dir exists
 if [ ! -d "$BACKUP_DIR" ]; then
-    echo "❌ Backup directory does not exist: $BACKUP_DIR"
+    echo "❌ Backup directory does not exist: $BACKUP_DIR" >&2
     exit 1
 fi
 
@@ -36,12 +36,12 @@ dump_database() {
 }
 
 if [[ -n "$TARGET_DATABASE" ]]; then
-    # Vérifie si la base existe avant de lancer le dump
+    # Check if the database exists before starting the dump
     DB_EXISTS=$(docker exec -it deven_web mysql -sN -uroot -hdeven_db -p${DB_ROOT_PASSWORD} -e "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME='$TARGET_DATABASE';" | tr -d '\r')
     if [[ "$DB_EXISTS" == "$TARGET_DATABASE" ]]; then
         dump_database "$TARGET_DATABASE"
     else
-        echo "❌ La base de données '$TARGET_DATABASE' n'existe pas."
+        echo "❌ The database '$TARGET_DATABASE' does not exist." >&2
         exit 1
     fi
 else

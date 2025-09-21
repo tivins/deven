@@ -5,3 +5,6 @@
 # Config files
 .env
 /docker/web/apache/sites.conf
+
+# project diff file
+/.diff

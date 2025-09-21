@@ -20,7 +20,31 @@ ARG1=$2
 
 case "$COMMAND" in
 ""|help)
-  echo "Help"
+  echo "🚀 Deven - Dockerized Development Environment"
+  echo ""
+  echo "Usage: deven <command> [options]"
+  echo ""
+  echo "Commands:"
+  echo "  build              Build and start all containers"
+  echo "  restart            Restart all containers"
+  echo "  stop               Stop all containers"
+  echo "  ps                 Show running deven containers"
+  echo "  list               List configured virtual hosts"
+  echo "  edit               Edit sites.conf configuration file"
+  echo "  dump [database]    Create database backup (all dbs if no name specified)"
+  echo "  bash [container]   Open bash shell in container (default: web)"
+  echo "  cd                 Display deven directory path"
+  echo "  version            Show deven version"
+  echo "  help               Show this help message"
+  echo ""
+  echo "Examples:"
+  echo "  deven build                    # Start the development environment"
+  echo "  deven bash                     # Access web container shell"
+  echo "  deven bash db                  # Access database container shell"
+  echo "  deven dump my_database         # Backup specific database"
+  echo "  deven list                     # Show configured sites"
+  echo ""
+  echo "For more information, visit: https://github.com/tivins/deven"
   ;;
 version)
   echo "1"
