@@ -25,7 +25,6 @@ RUN rm -rf /var/lib/apt/lists/* && apt-get clean
 
 RUN a2enmod rewrite macro
 
-COPY apache/sites.conf      /etc/apache2/sites.conf
 COPY apache/macro-site.conf /etc/apache2/conf-available/macro-site.conf
 
 RUN a2enconf macro-site

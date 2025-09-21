@@ -54,6 +54,9 @@ edit)
   file="$(getDir)/docker/web/apache/sites.conf"
   vim "$file"
   ;;
+dump)
+  $(getDir)/scripts/dump.sh
+  ;;
 bash)
   if [ -z "$ARG1" ]; then
     container="deven_web"

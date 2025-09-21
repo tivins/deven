@@ -60,6 +60,7 @@ deven bash [container] # Open a bash shell inside the [container] container. Ex:
 deven cd        # Display the Deven folder path. Use with: cd $(deven cd)
 deven list      # Display the list of configured sites
 deven edit      # Edit the configuration file with vim
+deven dump      # Create SQL dumps of all databases. Uses the BACKUP_DIR variable from .env.
 ```
 
 > [!TIP]
@@ -76,5 +77,5 @@ deven edit      # Edit the configuration file with vim
 
 ## To do
 
-* [ ] Dump databases script
+* [x] Dump databases script
 * [ ] Direct composer access
