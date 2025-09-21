@@ -56,11 +56,11 @@ sudo ln -s /path/to/deven deven
 deven start     # Start containers (build if required)
 deven restart   # Restart containers 
 deven bash      # Open a bash shell inside the web container
-deven bash [container] # Open a bash shell inside the [container] container. Ex: `deven bash db`.
+deven bash <container> # Open a bash shell inside the <container> container. Ex: `deven bash db`.
 deven cd        # Display the Deven folder path. Use with: cd $(deven cd)
 deven list      # Display the list of configured sites
 deven edit      # Edit the configuration file with vim
-deven dump      # Create SQL dumps of all databases. Uses the BACKUP_DIR variable from .env.
+deven dump <database> # Create SQL dumps of all databases. Uses the BACKUP_DIR variable from .env.
 ```
 
 > [!TIP]

@@ -5,6 +5,7 @@ set -euo pipefail
 # Configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CREDENTIALS_FILE="${SCRIPT_DIR}/../.env"
+TARGET_DATABASE="$1"  # Optional database name parameter
 
 
 # Load credentials
@@ -26,13 +27,27 @@ if [ ! -d "$BACKUP_DIR" ]; then
     exit 1
 fi
 
-# Load databases
-DATABASES=$(docker exec -it deven_web mysql -sN -uroot -hdeven_db -p${DB_ROOT_PASSWORD} -e"SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME NOT IN ('information_schema', 'performance_schema', 'mysql', 'sys');" | tr -d '\r')
+dump_database() {
+    local db="$1"
+    echo "🔄 Dumping database '$db'..."
+    local filename="${db}_$(date +%Y%m%d_%H%M%S).sql"
+    docker exec -it deven_web mysqldump -uroot -hdeven_db -p${DB_ROOT_PASSWORD} "$db" > "${BACKUP_DIR}/${filename}"
+    echo "✅ Dump of database '$db' saved to ${filename}"
+}
 
-for DATABASE in $DATABASES; do
-    echo "🔄 Dumping database '$DATABASE'..."
-    FILENAME="${DATABASE}_$(date +%Y%m%d_%H%M%S).sql"
-    docker exec -it deven_web mysqldump -uroot -hdeven_db -p${DB_ROOT_PASSWORD} $DATABASE > ${BACKUP_DIR}/${FILENAME}
-    echo "✅ Dump of database '$DATABASE' saved to ${FILENAME}"
-done
+if [[ -n "$TARGET_DATABASE" ]]; then
+    # Vérifie si la base existe avant de lancer le dump
+    DB_EXISTS=$(docker exec -it deven_web mysql -sN -uroot -hdeven_db -p${DB_ROOT_PASSWORD} -e "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME='$TARGET_DATABASE';" | tr -d '\r')
+    if [[ "$DB_EXISTS" == "$TARGET_DATABASE" ]]; then
+        dump_database "$TARGET_DATABASE"
+    else
+        echo "❌ La base de données '$TARGET_DATABASE' n'existe pas."
+        exit 1
+    fi
+else
+    DATABASES=$(docker exec -it deven_web mysql -sN -uroot -hdeven_db -p${DB_ROOT_PASSWORD} -e"SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME NOT IN ('information_schema', 'performance_schema', 'mysql', 'sys');" | tr -d '\r')
+    for DATABASE in $DATABASES; do
+        dump_database "$DATABASE"
+    done
+fi
 

@@ -55,7 +55,7 @@ edit)
   vim "$file"
   ;;
 dump)
-  $(getDir)/scripts/dump.sh
+  $(getDir)/scripts/dump.sh "$ARG1"
   ;;
 bash)
   if [ -z "$ARG1" ]; then
